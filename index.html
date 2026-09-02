@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="DJ Nurre - executive producer and showrunner who builds AI agents. Ten working tools, four live deployments, public code.">
+<meta name="theme-color" content="#07070d">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>%F0%9F%8E%AC</text></svg>">
+<title>DJ Nurre Agent Slate</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+
+<style>
+:root{
+  --bg:#07070d;
+  --panel:rgba(17,18,29,.74);
+  --panel-2:rgba(255,255,255,.035);
+  --text:#f5f6ff;
+  --muted:#adb0c6;
+  --subtle:#73778e;
+  --border:rgba(255,255,255,.115);
+  --border-hi:rgba(197,190,255,.55);
+  --purple:#aa8cff;
+  --blue:#5dbaff;
+  --mint:#61efc5;
+  --shadow:0 24px 80px rgba(0,0,0,.35);
+  --sans:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Consolas,monospace;
+}
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  min-width:320px;
+  overflow-x:hidden;
+  color:var(--text);
+  background:
+    radial-gradient(circle at 10% 4%, rgba(135,97,255,.22), transparent 30rem),
+    radial-gradient(circle at 90% 17%, rgba(43,167,255,.18), transparent 27rem),
+    radial-gradient(circle at 53% 93%, rgba(55,237,181,.11), transparent 32rem),
+    var(--bg);
+  font-family:var(--sans);
+  -webkit-font-smoothing:antialiased;
+}
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:-1;
+  pointer-events:none;
+  opacity:.28;
+  background-image:
+    linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px);
+  background-size:46px 46px;
+  -webkit-mask-image:linear-gradient(to bottom, black 0%, rgba(0,0,0,.65) 48%, transparent 100%);
+  mask-image:linear-gradient(to bottom, black 0%, rgba(0,0,0,.65) 48%, transparent 100%);
+}
+a{color:inherit;text-decoration:none;}
+a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offset:3px;border-radius:6px;}
+
+.shell{width:min(1160px, calc(100% - 40px));margin:0 auto;}
+
+/* nav */
+.nav{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:26px 0;}
+.brand{display:inline-flex;align-items:center;gap:11px;font-weight:800;letter-spacing:-.045em;}
+.brand-mark{
+  position:relative;width:24px;height:24px;flex:none;
+  border:1px solid rgba(152,221,255,.85);border-radius:8px;transform:rotate(12deg);
+  background:linear-gradient(135deg, rgba(162,136,255,.85), rgba(86,202,255,.68));
+  box-shadow:0 0 22px rgba(99,187,255,.38);
+}
+.brand-mark::after{content:"";position:absolute;inset:5px;border-radius:4px;background:var(--bg);}
+.nav-links{display:flex;align-items:center;gap:22px;}
+.nav-links a{color:var(--muted);font-size:.91rem;transition:color 180ms ease;}
+.nav-links a:hover{color:var(--text);}
+.status{display:inline-flex;align-items:center;gap:8px;color:#d3fce8;font-size:.84rem;font-weight:700;}
+.status-dot{
+  width:8px;height:8px;border-radius:50%;flex:none;background:var(--mint);
+  box-shadow:0 0 0 5px rgba(97,239,197,.1), 0 0 18px var(--mint);
+  animation:pulse 2.2s ease-in-out infinite;
+}
+@keyframes pulse{50%{opacity:.55;transform:scale(.8);}}
+
+/* hero */
+.hero{
+  display:grid;grid-template-columns:minmax(0,1.25fr) minmax(280px,.75fr);
+  gap:40px;align-items:center;padding:56px 0 72px;
+}
+.eyebrow{
+  display:inline-flex;align-items:center;gap:9px;padding:8px 12px;
+  border:1px solid var(--border);border-radius:999px;color:#dedaff;
+  background:rgba(162,140,255,.08);
+  font-size:.76rem;font-weight:800;letter-spacing:.085em;text-transform:uppercase;
+}
+.hero h1{
+  max-width:14ch;margin:21px 0 20px;
+  font-size:clamp(2.9rem,6.4vw,5.4rem);line-height:.95;letter-spacing:-.06em;font-weight:800;
+  text-wrap:balance;
+}
+.gradient-text{
+  background:linear-gradient(104deg,#fff 14%,#c0b4ff 43%,#75d2ff 69%,#75f2ca 95%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.hero-copy{max-width:56ch;margin:0;color:var(--muted);font-size:clamp(1.02rem,1.9vw,1.16rem);line-height:1.65;}
+.hero-copy + .hero-copy{margin-top:14px;font-size:1rem;color:var(--subtle);}
+.hero-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px;}
+.button{
+  display:inline-flex;align-items:center;justify-content:center;gap:9px;
+  padding:13px 17px;border:1px solid var(--border);border-radius:12px;
+  color:var(--text);background:rgba(255,255,255,.04);
+  font-size:.93rem;font-weight:700;
+  transition:transform 190ms ease,border-color 190ms ease,background 190ms ease;
+}
+.button:hover{transform:translateY(-3px);border-color:rgba(255,255,255,.4);background:rgba(255,255,255,.08);}
+.button-primary{
+  color:#070810;border:1px solid transparent;
+  background:linear-gradient(120deg,#c3b9ff,#78d8ff 62%,#7cf4cc);
+  box-shadow:0 14px 42px rgba(82,153,255,.24);
+}
+.button-primary:hover{background:linear-gradient(120deg,#d1c9ff,#86ddff 62%,#89f6d3);border-color:transparent;}
+
+/* orbital */
+.orbital{position:relative;display:grid;place-items:center;width:min(100%,380px);aspect-ratio:1;margin:0 auto;}
+.orbit{position:absolute;border:1px solid rgba(183,216,255,.2);border-radius:50%;}
+.orbit-one{width:100%;height:100%;animation:spin 22s linear infinite;}
+.orbit-two{width:73%;height:73%;border-color:rgba(166,136,255,.3);animation:spin-rev 15s linear infinite;}
+.orbit-three{width:46%;height:46%;border-color:rgba(99,239,197,.32);animation:spin 10s linear infinite;}
+.satellite{position:absolute;top:13%;left:50%;width:10px;height:10px;border-radius:50%;background:var(--mint);box-shadow:0 0 18px var(--mint);}
+.orbit-two .satellite{top:auto;bottom:2%;left:22%;width:8px;height:8px;background:var(--purple);box-shadow:0 0 16px var(--purple);}
+.orbit-three .satellite{top:23%;left:auto;right:-2px;width:7px;height:7px;background:var(--blue);box-shadow:0 0 14px var(--blue);}
+@keyframes spin{to{transform:rotate(360deg);}}
+@keyframes spin-rev{to{transform:rotate(-360deg);}}
+.agent-core{
+  display:grid;place-items:center;width:142px;aspect-ratio:1;
+  border:1px solid rgba(210,207,255,.45);border-radius:34px;
+  background:
+    radial-gradient(circle at 30% 25%, rgba(177,145,255,.48), transparent 52%),
+    linear-gradient(135deg, rgba(45,47,75,.98), rgba(15,17,30,.98));
+  box-shadow:0 0 0 15px rgba(159,143,255,.04), 0 24px 70px rgba(91,90,255,.28);
+  transform:rotate(45deg);
+}
+.agent-core b{transform:rotate(-45deg);font-size:2.4rem;font-weight:900;letter-spacing:-.11em;color:#fff;}
+.core-label{
+  position:absolute;bottom:6%;padding:8px 11px;border:1px solid var(--border);border-radius:9px;
+  color:#d8ddec;background:rgba(10,11,21,.74);font-family:var(--mono);font-size:.72rem;
+}
+@media (prefers-reduced-motion: reduce){
+  .orbit-one,.orbit-two,.orbit-three{animation:none;}
+  .status-dot{animation:none;}
+  .button:hover,.agent-item:hover{transform:none;}
+}
+
+/* counts */
+.counts{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;
+  overflow:hidden;border:1px solid var(--border);border-radius:18px;background:var(--border);
+}
+.count{padding:20px 22px;background:rgba(11,12,21,.86);}
+.count b{display:block;font-size:2rem;font-weight:800;line-height:1;letter-spacing:-.05em;font-variant-numeric:tabular-nums;}
+.count span{display:block;margin-top:7px;color:var(--subtle);font-family:var(--mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;}
+
+/* sections */
+.section{padding:64px 0 0;}
+.section-top{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:20px;}
+.section-title{margin:0;font-size:1.5rem;font-weight:800;letter-spacing:-.045em;}
+.section-note{margin:0;color:var(--subtle);font-size:.9rem;}
+
+/* agents */
+.agent-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;}
+.agent-item{
+  display:flex;flex-direction:column;gap:12px;padding:22px 22px 20px;
+  border:1px solid var(--border);border-radius:18px;background:var(--panel);
+  box-shadow:var(--shadow);
+  transition:transform 200ms ease,border-color 200ms ease;
+}
+.agent-item:hover{transform:translateY(-4px);border-color:var(--border-hi);}
+.agent-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;}
+.agent-name{margin:0;font-size:1.3rem;font-weight:800;letter-spacing:-.04em;}
+.pill{
+  display:inline-flex;align-items:center;gap:7px;flex:none;
+  padding:5px 10px;border-radius:999px;border:1px solid var(--border);
+  font-family:var(--mono);font-size:.66rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+}
+.pill.live{color:#d3fce8;border-color:rgba(97,239,197,.4);background:rgba(97,239,197,.09);}
+.pill.build{color:var(--subtle);background:rgba(255,255,255,.03);}
+.pill .d{width:6px;height:6px;border-radius:50%;flex:none;}
+.pill.live .d{background:var(--mint);box-shadow:0 0 10px var(--mint);}
+.pill.build .d{border:1.5px solid var(--subtle);}
+.agent-desc{margin:0;color:var(--muted);font-size:.94rem;line-height:1.6;flex:1;}
+.agent-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding-top:13px;border-top:1px solid rgba(255,255,255,.08);}
+.unit{font-family:var(--mono);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--subtle);}
+.agent-links{display:flex;gap:14px;}
+.agent-links a{font-size:.83rem;font-weight:700;color:#c6bcff;}
+.agent-links a:hover{color:#fff;}
+.agent-links .none{font-size:.83rem;color:var(--subtle);}
+
+/* proof */
+.proof-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.proof-card{padding:24px;border:1px solid var(--border);border-radius:18px;background:var(--panel-2);}
+.proof-card h3{margin:0 0 14px;font-size:.76rem;font-weight:800;letter-spacing:.11em;text-transform:uppercase;color:var(--mint);}
+.proof-card.limits h3{color:var(--blue);}
+.proof-card ul{margin:0;padding-left:18px;}
+.proof-card li{margin-bottom:11px;color:var(--muted);font-size:.95rem;line-height:1.6;}
+.proof-card li:last-child{margin-bottom:0;}
+
+.skills{display:flex;flex-wrap:wrap;gap:7px;margin-top:18px;}
+.skill{
+  padding:7px 10px;border:1px solid rgba(255,255,255,.1);border-radius:8px;
+  color:#d8d9e7;background:rgba(255,255,255,.04);font-family:var(--mono);font-size:.73rem;
+}
+
+/* cta */
+.final-cta{
+  position:relative;margin:64px 0 44px;padding:46px 30px;overflow:hidden;text-align:center;
+  border:1px solid rgba(183,168,255,.3);border-radius:25px;
+  background:
+    radial-gradient(circle at 50% -14%, rgba(137,111,255,.35), transparent 49%),
+    linear-gradient(145deg, rgba(29,25,56,.87), rgba(12,19,33,.88));
+}
+.final-cta h2{margin:0;font-size:clamp(1.8rem,3.6vw,2.9rem);font-weight:800;letter-spacing:-.055em;text-wrap:balance;}
+.final-cta p{max-width:56ch;margin:14px auto 24px;color:#c1c4d3;line-height:1.62;}
+.final-cta .hero-actions{justify-content:center;margin-top:0;}
+
+footer{display:flex;flex-wrap:wrap;justify-content:space-between;gap:14px;padding:0 0 40px;color:var(--subtle);font-size:.83rem;}
+footer a{color:#c6bcff;}
+footer a:hover{color:#fff;}
+
+@media (max-width:830px){
+  .hero,.proof-grid{grid-template-columns:1fr;}
+  .hero{padding-top:36px;}
+  .orbital{width:min(80vw,340px);margin-top:12px;}
+}
+@media (max-width:620px){
+  .shell{width:min(100% - 28px,1160px);}
+  .nav-links a:not(.status){display:none;}
+  .agent-grid{grid-template-columns:1fr;}
+  .section-top,footer{flex-direction:column;align-items:flex-start;}
+}
+</style>
+</head>
+<body>
+<main class="shell">
+
+  <nav class="nav">
+    <a class="brand" href="#slate" aria-label="DJ Nurre">
+      <span class="brand-mark"></span>
+      <span>DJ Nurre</span>
+    </a>
+    <div class="nav-links">
+      <a href="#slate">The slate</a>
+      <a href="#proof">What it proves</a>
+      <a class="status" href="https://github.com/R10ForTheWin/ai-agents" target="_blank" rel="noreferrer">
+        <span class="status-dot"></span>Building
+      </a>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div>
+      <div class="eyebrow"><span class="status-dot"></span>Executive Producer &middot; Showrunner &middot; Editor</div>
+      <h1>Twenty years running television. Now I <span class="gradient-text">build the tools</span>.</h1>
+      <p class="hero-copy">I came up as an editor, ran franchises as an EVP, and never stopped wanting to know how the machine works. So I started writing the machines. Ten agents, four of them live.</p>
+      <p class="hero-copy">These are working applications, not slides. Every one solves a problem I actually had. The code is public and the deployments are one click away.</p>
+      <div class="hero-actions">
+        <a class="button button-primary" href="https://github.com/R10ForTheWin/ai-agents" target="_blank" rel="noreferrer">Explore the code <span aria-hidden="true">&rarr;</span></a>
+        <a class="button" href="#slate">See the slate <span aria-hidden="true">&darr;</span></a>
+      </div>
+    </div>
+    <div class="orbital" aria-label="Animated agent orbit graphic" role="img">
+      <div class="orbit orbit-one"><span class="satellite"></span></div>
+      <div class="orbit orbit-two"><span class="satellite"></span></div>
+      <div class="orbit orbit-three"><span class="satellite"></span></div>
+      <div class="agent-core"><b>DJ</b></div>
+      <div class="core-label">build &rarr; deploy &rarr; use</div>
+    </div>
+  </section>
+
+  <div class="counts">
+    <div class="count"><b>10</b><span>Agents built</span></div>
+    <div class="count"><b>4</b><span>Live deployments</span></div>
+    <div class="count"><b>8</b><span>Public repositories</span></div>
+    <div class="count"><b>20+</b><span>Years in production</span></div>
+  </div>
+
+  <section class="section" id="slate">
+    <div class="section-top">
+      <h2 class="section-title">The slate</h2>
+      <p class="section-note">Ten agents across healthcare, education, media, sport and logistics.</p>
+    </div>
+    <div class="agent-grid">
+
+      <article class="agent-item">
+        <div class="agent-head">
+          <h3 class="agent-name">Rundle</h3>
+          <span class="pill live"><span class="d"></span>Live</span>
+        </div>
+        <p class="agent-desc">A verified performance transcript for healthcare administrative staff, matching demonstrated competencies to open roles without leaning on employer references.</p>
+        <div class="agent-foot">
+          <span class="unit">Healthcare &middot; Hiring</span>
+          <span class="agent-links">
+            <a href="https://r10forthewin.github.io/rundle-app/" target="_blank" rel="noreferrer">Demo &#8599;</a>
+            <a href="https://github.com/R10ForTheWin/rundle-app" target="_blank" rel="noreferrer">Code &#8599;</a>
+          </span>
+        </div>
+      </article>
+
+      <article class="agent-item">
+        <div class="agent-head">
+          <h3 class="agent-name">Oreo&rsquo;s Map Quest</h3>
+          <span class="pill build"><span class="d"></span>In build</span>
+        </div>
+        <p class="agent-desc">Interactive geography for elementary students. Built for two specific kids who were never going to sit still for flashcards.</p>
+        <div class="agent-foot">
+          <span class="unit">Education</span>
+          <span class="agent-links">
+            <a href="https://github.com/R10ForTheWin/map-quiz" target="_blank" rel="noreferrer">Code &#8599;</a>
+          </span>
+        </div>
+      </article>
+
+      <article class="agent-item">
+        <div class="agent-head">
+          <h3 class="agent-name">WallSight</h3>
+          <span class="pill live"><span class="d"></span>Live</span>
+        </div>
+        <p class="agent-desc">Browser-based AR that reveals what is inside a wall, including studs, electrical, plumbing and HVAC, through a phone camera. Built from pre-drywall capture.</p>
+        <div class="agent-foot">
+          <span class="unit">AR &middot; Construction</span>
+          <span class="agent-links">
+            <a href="https://r10forthewin.github.io/wallsight-demo/" target="_blank" rel="noreferrer">Demo &#8599;</a>
+            <a href="https://github.com/R10ForTheWin/wallsight-demo" target="_blank" rel="noreferrer">Code &#8599;</a>
+          </span>
+        </div>
+      </article>
+
+      <article class="agent-item">
+        <div class="agent-head">
+          <h3 class="agent-name">Domain Huntress</h3>
+          <span class="pill build"><span class="d"></span>In build</span>
+        </div>
+        <p class="agent-desc">Filters candidate books for legal public domain status, scores them against studio adaptation criteria, and returns a ranked top ten. A development tool for finding IP nobody has to license.</p>
+        <div class="agent-foot">
+          <span class="unit">Media &middot; Development</span>
+          <span class="agent-links">
+            <a href="https://github.com/R10ForTheWin/Domain-Hunter" target="_blank" rel="noreferrer">Code &#8599;</a>
+          </span>
+        </div>
+      </article>
+
+      <article class="agent-item">
+        <div class="agent-head">
+          <h3 class="agent-name">Artie</h3>
+          <span class="pill live"><span class="d"></span>Live</span>
+        </div>
+        <p class="agent-desc">Coordinates a ten-person prone paddle crew training for the Catalina Classic, a 32-mile open-ocean race. Tracks mileage, schedules, team records and ocean conditions.</p>
+        <div class="agent-foot">
+          <span class="unit">Sport &middot; Logistics</span>
+          <span class="agent-links">
+            <a href="https://artie-production-1b13.up.railway.app" target="_blank" rel="noreferrer">Demo &#8599;</a>
+            <a href="https://github.com/R10ForTheWin/artie" target="_blank" rel="noreferrer">Code &#8599;</a>
+          </span>
+        </div>
+      </article>
+
+      <article class="agent-item">
+        <div class="agent-head">
+          <h3 class="agent-name">Dottie</h3>
+          <span class="pill live"><span class="d"></span>Live</span>
+        </div>
+        <p class="agent-desc">Project progress as colored dots racing an oval track. Built because a status bar tells you where you are, and a race tells you who is behind.</p>
+        <div class="agent-foot">
+          <span class="unit">Tools &middot; Visualization</span>
+          <span class="agent-links">
+            <a href="https://dot-race-production.up.railway.app" target="_blank" rel="noreferrer">Demo &#8599;</a>
+            <a href="https://github.com/R10ForTheWin/dot-race" target="_blank" rel="noreferrer">Code &#8599;</a>
+          </span>
+        </div>
+      </article>
+
+      <article class="agent-item">
+        <div class="agent-head">
+          <h3 class="agent-name">Justin EMBAlake</h3>
+          <span class="pill build"><span class="d"></span>In build</span>
+        </div>
+        <p class="agent-desc">Watches UCLA parking inventory around the clock and buys a pass the instant one opens. An autonomous agent with a single unglamorous, genuinely useful job.</p>
+        <div class="agent-foot">
+          <span class="unit">Automation</span>
+          <span class="agent-links">
+            <a href="https://github.com/R10ForTheWin/ucla_parking" target="_blank" rel="noreferrer">Code &#8599;</a>
+          </span>
+        </div>
+      </article>
+
+      <article class="agent-item">
+        <div class="agent-head">
+          <h3 class="agent-name">Newsie</h3>
+          <span class="pill build"><span class="d"></span>In build</span>
+        </div>
+        <p class="agent-desc">Runs real headlines alongside satirical ones. A reading experiment in how framing changes what a story feels like.</p>
+        <div class="agent-foot">
+          <span class="unit">Media &middot; Editorial</span>
+          <span class="agent-links">
+            <a href="https://github.com/R10ForTheWin/newsie" target="_blank" rel="noreferrer">Code &#8599;</a>
+          </span>
+        </div>
+      </article>
+
+      <article class="agent-item">
+        <div class="agent-head">
+          <h3 class="agent-name">Tournament Translator</h3>
+          <span class="pill build"><span class="d"></span>In build</span>
+        </div>
+        <p class="agent-desc">Decodes water polo tournament bracket formats into a schedule a parent can actually read.</p>
+        <div class="agent-foot">
+          <span class="unit">Sport &middot; Scheduling</span>
+          <span class="agent-links"><span class="none">Private repo</span></span>
+        </div>
+      </article>
+
+      <article class="agent-item">
+        <div class="agent-head">
+          <h3 class="agent-name">Reggie</h3>
+          <span class="pill build"><span class="d"></span>In build</span>
+        </div>
+        <p class="agent-desc">Mobile-first swim team management. Practice scheduling and attendance for coaches working from the pool deck, not a desk.</p>
+        <div class="agent-foot">
+          <span class="unit">Sport &middot; Operations</span>
+          <span class="agent-links"><span class="none">Private repo</span></span>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <section class="section" id="proof">
+    <div class="section-top">
+      <h2 class="section-title">What this proves</h2>
+      <p class="section-note">And, just as usefully, what it does not.</p>
+    </div>
+    <div class="proof-grid">
+      <article class="proof-card">
+        <h3>What this is</h3>
+        <ul>
+          <li>Evidence that I write and ship working software, rather than brief someone who does.</li>
+          <li>A read on how I think: find the friction, build the smallest thing that removes it, put it somewhere people can use it.</li>
+          <li>Enough fluency to tell an engineering team what I need, and to know when the answer I am getting is wrong.</li>
+        </ul>
+      </article>
+      <article class="proof-card limits">
+        <h3>What this is not</h3>
+        <ul>
+          <li>Production infrastructure at studio scale. These are personal-scale tools with real users, not enterprise pipelines.</li>
+          <li>A claim to be an ML engineer. I am a creative who builds, and the translation between those two rooms is the actual skill.</li>
+          <li>Finished. Most of these are still moving, which is rather the point of a slate.</li>
+        </ul>
+      </article>
+    </div>
+    <div class="skills">
+      <span class="skill">Python</span>
+      <span class="skill">Flask</span>
+      <span class="skill">REST APIs</span>
+      <span class="skill">LLM pipelines</span>
+      <span class="skill">deterministic validators</span>
+      <span class="skill">Railway</span>
+      <span class="skill">GitHub Pages</span>
+      <span class="skill">agentic coding tools, daily</span>
+    </div>
+  </section>
+
+  <section class="final-cta">
+    <h2>Look at the code, not the claim.</h2>
+    <p>Everything on this page links to a live deployment or a public repository. The fastest way to judge whether any of it is real is to open one.</p>
+    <div class="hero-actions">
+      <a class="button button-primary" href="https://github.com/R10ForTheWin/ai-agents" target="_blank" rel="noreferrer">Open the repository <span aria-hidden="true">&rarr;</span></a>
+      <a class="button" href="mailto:djnurre@me.com">djnurre@me.com</a>
+    </div>
+  </section>
+
+  <footer>
+    <span>DJ Nurre &middot; Los Angeles</span>
+    <span>
+      <a href="https://www.linkedin.com/in/djnurre" target="_blank" rel="noreferrer">LinkedIn</a> &nbsp;&middot;&nbsp;
+      <a href="https://github.com/R10ForTheWin" target="_blank" rel="noreferrer">GitHub</a> &nbsp;&middot;&nbsp;
+      <a href="https://www.imdb.com/name/nm1217463/" target="_blank" rel="noreferrer">IMDb</a>
+    </span>
+  </footer>
+
+</main>
+</body>
+</html>
